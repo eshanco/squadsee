@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner() {
+      // Replace with the UID of the single coach account created in the
+      // Firebase console (Authentication > Users). Get it after creating
+      // that user, then redeploy: firebase deploy --only firestore:rules
+      return request.auth != null && request.auth.uid == "PUT_YOUR_SINGLE_USER_UID_HERE";
+    }
+
+    match /{document=**} {
+      allow read, write: if isOwner();
+    }
+  }
+}
