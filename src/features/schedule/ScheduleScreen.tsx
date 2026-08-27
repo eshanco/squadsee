@@ -13,6 +13,7 @@ import {
   updateRecurringTraining,
 } from '../../hooks/useRecurringTrainings'
 import { usePlayers } from '../../hooks/usePlayers'
+import { useSettings, setDefaultGameFormatIfUnset } from '../../hooks/useSettings'
 import { GameForm } from './GameForm'
 import { RecurringTrainingForm } from './RecurringTrainingForm'
 import { AttendanceModal } from './AttendanceModal'
@@ -33,10 +34,15 @@ function seasonStart(): Date {
   return new Date(year, 7, 1)
 }
 
-export function ScheduleScreen() {
+export function ScheduleScreen({
+  onOpenLineup,
+}: {
+  onOpenLineup: (game: Game) => void
+}) {
   const { games, loading: gamesLoading } = useGames()
   const { trainings, loading: trainingsLoading } = useRecurringTrainings()
   const { players } = usePlayers()
+  const { settings } = useSettings()
   const [editingGame, setEditingGame] = useState<Game | 'new' | null>(null)
   const [editingTraining, setEditingTraining] = useState<RecurringTraining | 'new' | null>(null)
   const [attendanceFor, setAttendanceFor] = useState<Game | null>(null)
@@ -264,10 +270,12 @@ export function ScheduleScreen() {
       {editingGame && (
         <GameForm
           initial={editingGame === 'new' ? undefined : editingGame}
+          defaultFormat={settings.defaultGameFormat}
           onClose={() => setEditingGame(null)}
           onSave={async (data) => {
             if (editingGame === 'new') {
               await addGame(data)
+              if (data.format) await setDefaultGameFormatIfUnset(data.format)
             } else {
               await updateGame(editingGame.id, data)
             }
@@ -287,6 +295,15 @@ export function ScheduleScreen() {
                   const game = editingGame
                   setEditingGame(null)
                   setAttendanceFor(game)
+                }
+          }
+          onLineup={
+            editingGame === 'new'
+              ? undefined
+              : () => {
+                  const game = editingGame
+                  setEditingGame(null)
+                  onOpenLineup(game)
                 }
           }
         />

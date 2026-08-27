@@ -18,6 +18,7 @@ function App() {
 function AuthedApp() {
   const { user, loading } = useAuth()
   const [screen, setScreen] = useState<Screen>('roster')
+  const [lineupGameId, setLineupGameId] = useState<string | null>(null)
 
   if (loading) return <Spinner />
   if (!user) return <LoginScreen />
@@ -32,8 +33,17 @@ function AuthedApp() {
       </header>
       <main className="flex-1 overflow-y-auto">
         {screen === 'roster' && <RosterScreen />}
-        {screen === 'schedule' && <ScheduleScreen />}
-        {screen === 'lineup' && <LineupScreen />}
+        {screen === 'schedule' && (
+          <ScheduleScreen
+            onOpenLineup={(game) => {
+              setLineupGameId(game.id)
+              setScreen('lineup')
+            }}
+          />
+        )}
+        {screen === 'lineup' && (
+          <LineupScreen gameId={lineupGameId} onSelectGame={setLineupGameId} />
+        )}
       </main>
       <NavBar active={screen} onChange={setScreen} />
     </div>

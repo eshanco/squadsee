@@ -1,24 +1,29 @@
 import { useState, type FormEvent } from 'react'
 import { Modal } from '../../components/Modal'
 import { Button } from '../../components/Button'
-import type { Game } from '../../types/game'
+import { GAME_FORMATS, type Game, type GameFormat } from '../../types/game'
 import type { GameFormInput } from '../../hooks/useGames'
 
 export function GameForm({
   initial,
+  defaultFormat,
   onSave,
   onClose,
   onDelete,
   onAttendance,
+  onLineup,
 }: {
   initial?: Game
+  defaultFormat?: GameFormat
   onSave: (data: GameFormInput) => Promise<void>
   onClose: () => void
   onDelete?: () => Promise<void>
   onAttendance?: () => void
+  onLineup?: () => void
 }) {
   const [opponent, setOpponent] = useState(initial?.opponent ?? '')
   const [date, setDate] = useState(initial ? toLocalInputValue(initial.date.toDate()) : '')
+  const [format, setFormat] = useState<GameFormat | ''>(initial?.format ?? defaultFormat ?? '')
   const [location, setLocation] = useState(initial?.location ?? '')
   const [notes, setNotes] = useState(initial?.notes ?? '')
   const [saving, setSaving] = useState(false)
@@ -26,12 +31,17 @@ export function GameForm({
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    if (!format) {
+      setError('Pick a format.')
+      return
+    }
     setSaving(true)
     setError(null)
     try {
       await onSave({
         type: 'game',
         opponent: opponent.trim() || undefined,
+        format: format || undefined,
         date: new Date(date),
         location: location.trim(),
         notes: notes.trim() || undefined,
@@ -65,6 +75,25 @@ export function GameForm({
             className={inputClass}
           />
         </label>
+        <div>
+          <p className="block text-sm font-medium text-gray-700">Format *</p>
+          <div className="mt-1 grid grid-cols-3 gap-1">
+            {GAME_FORMATS.map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFormat(f)}
+                className={`rounded-md py-1.5 text-sm font-medium transition-colors ${
+                  format === f
+                    ? 'bg-green-700 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
         <label className="block text-sm font-medium text-gray-700">
           Location *
           <input
@@ -96,6 +125,11 @@ export function GameForm({
             {onAttendance && (
               <Button variant="secondary" type="button" onClick={onAttendance}>
                 Attendance
+              </Button>
+            )}
+            {onLineup && (
+              <Button variant="secondary" type="button" onClick={onLineup}>
+                Lineup
               </Button>
             )}
           </div>

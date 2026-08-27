@@ -1,3 +1,5 @@
+import type { GameFormat } from './game'
+
 export interface FormationSlot {
   id: string
   label: string
@@ -8,5 +10,6 @@ export interface FormationSlot {
 export interface Formation {
   key: string
   name: string
+  format: GameFormat
   slots: FormationSlot[]
 }
