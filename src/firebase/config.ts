@@ -31,5 +31,9 @@ export const auth = app ? getAuth(app) : undefined
 export const db = app
   ? initializeFirestore(app, {
       localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+      // Optional player/game fields (phone, notes, etc.) are written as
+      // `undefined` when left blank; Firestore rejects `undefined` field
+      // values unless this is set, which silently failed every write.
+      ignoreUndefinedProperties: true,
     })
   : undefined

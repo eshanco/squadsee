@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { usePlayers, addPlayer, updatePlayer } from '../../hooks/usePlayers'
+import { useGames } from '../../hooks/useGames'
 import { PlayerCard } from './PlayerCard'
 import { PlayerForm } from './PlayerForm'
 import { Button } from '../../components/Button'
 import { Spinner } from '../../components/Spinner'
+import { getPlayerAttendanceStats } from '../../lib/attendance'
 import type { Player } from '../../types/player'
 
 export function RosterScreen() {
   const { players, loading } = usePlayers()
+  const { games } = useGames()
   const [editing, setEditing] = useState<Player | 'new' | null>(null)
   const [showInactive, setShowInactive] = useState(false)
 
@@ -16,7 +19,7 @@ export function RosterScreen() {
   return (
     <div className="p-4">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-gray-900">Roster</h1>
+        <h1 className="text-xl font-semibold text-gray-900">Squad</h1>
         <Button onClick={() => setEditing('new')}>Add player</Button>
       </div>
 
@@ -28,7 +31,12 @@ export function RosterScreen() {
 
       <div className="space-y-2">
         {visible.map((player) => (
-          <PlayerCard key={player.id} player={player} onClick={() => setEditing(player)} />
+          <PlayerCard
+            key={player.id}
+            player={player}
+            stats={getPlayerAttendanceStats(games, player.id)}
+            onClick={() => setEditing(player)}
+          />
         ))}
       </div>
 

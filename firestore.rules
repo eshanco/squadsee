@@ -5,7 +5,7 @@ service cloud.firestore {
       // Replace with the UID of the single coach account created in the
       // Firebase console (Authentication > Users). Get it after creating
       // that user, then redeploy: firebase deploy --only firestore:rules
-      return request.auth != null && request.auth.uid == "PUT_YOUR_SINGLE_USER_UID_HERE";
+      return request.auth != null && request.auth.uid == "Oyp9m6gLoWajT70KFJKBtZ5xwSp2";
     }
 
     match /{document=**} {

@@ -1,7 +1,7 @@
 export type Screen = 'roster' | 'schedule' | 'lineup'
 
 const TABS: { id: Screen; label: string }[] = [
-  { id: 'roster', label: 'Roster' },
+  { id: 'roster', label: 'Squad' },
   { id: 'schedule', label: 'Schedule' },
   { id: 'lineup', label: 'Lineup' },
 ]

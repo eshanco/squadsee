@@ -1,6 +1,15 @@
+import type { AttendanceStats } from '../../lib/attendance'
 import type { Player } from '../../types/player'
 
-export function PlayerCard({ player, onClick }: { player: Player; onClick: () => void }) {
+export function PlayerCard({
+  player,
+  stats,
+  onClick,
+}: {
+  player: Player
+  stats: AttendanceStats
+  onClick: () => void
+}) {
   return (
     <button
       type="button"
@@ -15,6 +24,12 @@ export function PlayerCard({ player, onClick }: { player: Player; onClick: () =>
           {player.firstName} {player.lastName}
         </span>
         <span className="block text-xs text-gray-500">{player.primaryPosition}</span>
+      </span>
+      <span className="shrink-0 text-right text-xs text-gray-500">
+        <span className="block font-medium text-gray-700">
+          {stats.percentage !== null ? `${stats.percentage}% trained` : 'No data'}
+        </span>
+        {stats.recorded > 0 && <span className="block">{stats.missed} missed</span>}
       </span>
     </button>
   )

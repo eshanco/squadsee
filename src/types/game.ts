@@ -10,6 +10,8 @@ export interface Game {
   location: string
   notes?: string
   attendance: Record<string, AttendanceStatus>
+  // Set only on practice sessions materialized from a RecurringTraining rule.
+  trainingId?: string
   createdAt: Timestamp
   updatedAt: Timestamp
 }

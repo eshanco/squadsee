@@ -26,10 +26,12 @@ export function PlayerForm({
   const [parentEmail, setParentEmail] = useState(initial?.parentEmail ?? '')
   const [notes, setNotes] = useState(initial?.notes ?? '')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setSaving(true)
+    setError(null)
     try {
       await onSave({
         firstName: firstName.trim(),
@@ -44,6 +46,8 @@ export function PlayerForm({
         active: initial?.active ?? true,
       })
       onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save player.')
     } finally {
       setSaving(false)
     }
@@ -130,6 +134,8 @@ export function PlayerForm({
             className={inputClass}
           />
         </Field>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+
         <div className="flex items-center justify-between gap-2 pt-2">
           {onToggleActive ? (
             <Button variant="danger" type="button" onClick={onToggleActive}>
