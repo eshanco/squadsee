@@ -1,6 +1,6 @@
 # SquadSee
 
-A PWA for managing a youth soccer team — roster, schedule, attendance, and an
+A PWA for managings a youth soccer team — roster, schedule, attendance, and an
 in-game drag-and-drop lineup/formation builder with per-player playing-time
 tracking. Built with Vite + React + TypeScript + Firebase, deployed free on
 GitHub Pages.
